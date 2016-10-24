@@ -1,0 +1,56 @@
+Créer son environnement
+
+# Créer son environnement
+
+La première chose à faire était de créer mon environnement. J'ai donc lu, maintes et maintes fois, la documentation gratieusement mise à disposition par Synology Inc. Et oui plusieurs fois, car j'avais parfois l'impression d'avoir raté un truc, mais en fait je pense que ce truc avait été oublié lors de la rédaction :-(
+
+Vous pouvez trouver cette documentation [ici](https://developer.synology.com/download/developer-guide.pdf)
+Il s'agit de la version pour DSM 6.0, j'aurais préféré celle pour DSM 5.2, mais je ne l'ai pas trouvé pour le moment (Si vous en avez une à m'envoyer, un grand merci d'avance).
+
+Suite à plusieurs chocs anaphylactiques sévères, mon médecin m'a recommandé d'éviter tout contact avec des pommes croquées ou des fenêtres bleues. Je ne travaille donc, malheureusement pour certains, qu'avec Linux (pas crédible, si ? :-), bien que je sois pro Linux (mais pas un PRO pour autant), je respecte ceux et celles qui n'ont pas fait le même choix que moi). 
+Donc dans les lignes qui suivent, toutes les commandes seront supposées être exécutées sur un système Linux. Vous avez uniquement besoin de votre distrib Linux préférée, du temps et de la patience.
+ 
+Ce qu'il faut savoir dans un premier temps c'est qu'il faut avoir les accès "root" ou sudo. Bien que cela ne soit pas utile en théorie pour cette application, malheureusement, si on a le choix je n'ai pas encore cherché comment le faire.
+
+1. Premièrement on doit définir où placer le SDK de synology, personnellement j'ai choisit de le placer dans /opt/toolkit
+
+        mkdir -p /opt/toolkit
+
+2. Bon maintenant il faut le télécharger ce fameux toolkit
+
+        $cd /opt/toolikt
+        $git clone https://github.com/SynologyOpenSource/pkgscripts
+        Cloning into 'pkgscripts'...
+        remote: Counting objects: 26, done.
+        remote: Total 26 (delta 10), reused 0 (delta 0), pack-reused 26
+        Unpacking objects: 100% (26/26), done.
+        Checking connectivity... done.
+
+3. A partir de là on peut créer notre environnement de développement
+Comme je tiens à mes données sur mon p'tit NAS adoré, j'ai préféré faire mes tests sur VirtualBox en installant XPEnology, il faut donc un environnement DSM "5.2" pour une plateforme "bromolow". Je vérifie si cette platefome est bien disponible et tant qu'on y est si mon NAS, le vrai, lui aussi.
+
+Pour connaître la plateforme cible il suffit d'exécuter la commande suivante sur le NAS 
+
+        $uname -a
+        Linux ... x86_64 GNU/Linux synology_bromolow_...
+
+Et pour créer notre environnement, en local
+
+        $cd /opt/toolkit
+        $./pkgscripts/EnvDeploy -v 5.2 --list
+        ======== Available Platforms ========
+        5.2: 6281 853x alpine armada370 armada375 armada38x armadaxp avoton bromolow cedarview comcerto2k evansport hi3535 monaco qoriq x64 northstarplus
+        
+        $./pkgscripts/EnvDeploy -v 5.2 -p bromolow
+        Desired platform: bromolow
+        Desired version: 5.2 (5.2)
+        Destination folder: /opt/toolkit/build_env
+        Clean if target exists: No
+        
+        Continue if above settings are OK.
+        Continue? (y/n)[n]: y
+        Continue ...
+
+Faut être un peu patient, ça prend du temps ...
+
+Voilà notre environnement est prêt. Il ne reste plus qu'à développer notre application. 
