@@ -1,4 +1,4 @@
-# Hello World Front App
+# Premier Front-End
 
 Dans cette seconde version de notre packagenous allons créer un petit front tout simple.
 
@@ -98,3 +98,7 @@ Pour que le package soit bien repris dans la catégorie "Third Party" dans le "P
 Voilà, on peut regénérer le package pour le déployer
 
     ./pkgscripts/PkgCreate.py -x0 --no-sign -c syno-library
+
+Une fois déployée, nous avons une nouvelle icône dans la liste des application. Nous pouvons alors ouvrir notre belle application et voir une magnifique fenêtre vide ou presque contenant le libellé "Hello World".
+
+Formidable .... tavernier vite la suite ... 

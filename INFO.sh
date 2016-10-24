@@ -10,7 +10,7 @@ displayname_sec="app"
 displayname_key="title"
 
 package="syno-library"
-version="0.0.0002"
+version="0.0.0003"
 maintainer="Synology Community"
 arch="bromolow"
 

@@ -1,0 +1,26 @@
+{
+    "result": [{
+	    "identifier": 0,
+	    "title": "Magasine n°1",
+	    "description": "Magasine n°1"
+	}, {
+	    "identifier": 1,
+	    "title": "Magasine n°2",
+	    "description": "Magasine n°2"
+	}, {
+	    "identifier": 2,
+	    "title": "Magasine n°3",
+	    "description": "Magasine n°3"
+	}, {
+	    "identifier": 3,
+	    "title": "Magasine n°4",
+	    "description": "Magasine n°4"
+	}, {
+	    "identifier": 4,
+	    "title": "Magasine n°5",
+	    "description": "Magasine n°5"
+	}
+    ],
+    "success": true,
+    "total": 5
+}

@@ -3,4 +3,9 @@ title = "Synology Library"
 description = "This is a wonderful library on Synology"
 
 [body]
-hw=Hello World !
+magazine=Magazine
+recipe=Recipe
+search=Search
+identifier=Identifier
+title=Title
+description=Description

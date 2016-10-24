@@ -1,4 +1,4 @@
-# Hello World App
+# Premier package
 
 Ok donc on est pêt pour développer notre première application qui risque d'être si époustouflante que nous n'allons pas nous arrêter en si bon chemin !!! :-)
 
@@ -228,4 +228,4 @@ Parfait, je n'ai perdu personne ?! Bon il ne nous reste plus qu'une chose à fai
 
 Nous avons la possibilité de signer les packages que nous créons. Dans un premier temps j'ai choisi de ne pas le faire c'est pour ça que j'utilise l'option ***--no-sign***, mais si vous le souhaitez libre à vous de les signer. Il suffit de générer une clé à copier dans le répertoire /opt/toolkit/build_env/ds.bromolow-5.2/root/.gnupg/ (ceci est expliqué dans la documentation synology dont le lien est rappelé plus haut).
 
-Comme dit précédemment, toutes ces étapes on été rassemlées dans un seul et même scipt shell. Vous pouvez y jetez un coup d'oeil, le modifier et l'utiliser comme bon vous semble mais je me dégage de toute responsabilité bien sûr. 
+Comme dit précédemment, toutes ces étapes on été rassemlées dans un seul et même scipt shell. Vous pouvez y jetez un coup d'oeil, le modifier et l'utiliser comme bon vous semble mais je me dégage de toute responsabilité bien sûr.
