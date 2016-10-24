@@ -1,3 +1,6 @@
 [app]
-title = "syno-library"
-description = "syno-library"
+title = "Bibliothèque Synology"
+description = "C'est une bibliothèque virtuelle démentielle pour Synology"
+
+[body]
+hw=Hello World !

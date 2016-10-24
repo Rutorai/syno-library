@@ -1,0 +1,98 @@
+# Hello World Front App
+
+Dans cette seconde version de notre packagenous allons créer un petit front tout simple.
+
+Nous devons dans un premier temps mettre à jour le numéro de version dans le fichiers INFO.sh et SynoBuildConf/install
+
+Nous allons commencer par créer une fenêtre relativement simple qui sera décrite dans le fichier ***syno-library.js***
+Dans ce fichier nous devons définir le "namespace" de l'application. Cela permet de créer notre classe contenant la définition de notre fenêtre, sans écraser risquer d'écraser une classe ayant le même nom et créée par quelqu'un d'autre mais n'ayant rien à voir avec notre application. Généralement le namespace des applications créées par la communauté est préfixé par "SYNOCOMMUNITY". Une application est ensuite définit par deux classes:
+
+1. L'une devant hériter de SYNO.SDS.AppInstance qui définit chaque instance de l'application démarrée
+2. L'autre devant hériter de SYNO.SDS.AppWindow qui définit la fenêtre
+
+    $cd /opt/toolkit/source/syno-library/package/ui
+    $cat << __EOF__ > syno-library.js
+    // Namespace definition
+    Ext.ns("SYNOCOMMUNITY.sl");
+    
+    // Application definition
+    Ext.define("SYNOCOMMUNITY.sl.AppInstance", {
+        extend: "SYNO.SDS.AppInstance",
+        appWindowName: "SYNOCOMMUNITY.sl.AppWindow",
+        constructor: function () {
+            this.callParent(arguments)
+        }
+    });
+    
+    // Window definition
+    Ext.define("SYNOCOMMUNITY.sl.AppWindow", {
+        extend: "SYNO.SDS.AppWindow",
+        constructor: function (config) {
+            config = Ext.apply({
+                resizable: true,
+                maximizable: true,
+                minimizable: true,
+                width: 700,
+                height: 350,
+                items: [{
+                    xtype: 'label',
+                    text: _TT("SYNOCOMMUNITY.sl.AppInstance", "body", "hw")
+                }]
+            }, config);
+
+            this.callParent([config]);
+        }
+    });
+    __EOF__
+
+Notre fenêtre, très simple, sera redimensionnable avec une taille initiale de 700x350 px et contiendra le libellé "Hello World !". Ce libellé sera rajouté aux fichiers de traduction sous la catégorie "body avec la clé "hw".
+Toutes les traductions que nous définissons sont accessibles avec la fonctions _TT, à laquelle on doit donner le nom de l'instance, la catégorie et la clé.
+
+    $cd /opt/toolkit/source/syno-library/package/ui/texts
+    $echo -e "\n[body]\nhw=Hello World !" >> enu/strings
+    $echo -e "\n[body]\nhw=Hello World !" >> fre/strings
+
+Il faut désormais décrire comment l'application peut être exécutée. En effet, en cliquant sur l'icône de notre application qu'est-ce-qu'il faut faire ? Quel fichier utiliser ? Est-il possible d'y avoir plusieurs fenêtres d'ouvertes en même temps ? Cela se fait grace au fichier "config". Il s'agit d'un fichier JSON décrivant notre application. Le type d'application est "app". Le titre et la description seront ceux déjà renseigné dans les fichiers de traductions, que se trouveront dans le répertoire "texts". Nous en profiterons pour mettre un titre et une description un peu plus echerché, sans faire trop d'effort. 
+Pour notre application il n'y aura qu'une seule instance possible.
+
+    $cd /opt/toolkit/source/syno-library/package/ui
+    $cat << __EOF__ > config
+    {
+        "syno-library.js": {
+            "SYNOCOMMUNITY.sl.AppInstance": {
+                "type": "app",
+                "title": "app:title",
+                "desc": "app:description",
+                "icon": "images\/syno-library_{0}.png",
+                "version": "__PKG_VERSION__",
+                "texts": "texts",
+                "allowMultiInstance": false,
+                "appWindow": "SYNOCOMMUNITY.sl.AppWindow",
+                "depend": ["SYNOCOMMUNITY.sl.AppWindow"]
+            },
+            "SYNOCOMMUNITY.sl.AppWindow": {
+                "type": "lib",
+                "title": "app:title",
+                "icon": "images\/syno-library_{0}.png",
+                "texts": "texts",
+                "depend": []
+            }
+        }
+    }
+    __EOF__
+    
+Dernière chose avant de pouvoir déployer notre package, il faut mettre à jour le fichier INFO.sh pour y préciser le répertoire contenant l'interface utilisateur (ui) et le nom de la classe définissant une instance de l'application.
+Pour que le package soit bien repris dans la catégorie "Third Party" dans le "Package manager", nous pouvons également mettre à jour la propriété thirdparty
+
+    $cd /opt/toolkit/source/syno-library
+   
+    Lignes à rajouter:
+   
+    dsmuidir="ui"
+    dsmappname="SYNOCOMMUNITY.sl.AppInstance"
+    
+    thirdparty="yes"
+
+Voilà, on peut regénérer le package pour le déployer
+
+    ./pkgscripts/PkgCreate.py -x0 --no-sign -c syno-library

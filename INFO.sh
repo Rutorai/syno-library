@@ -10,9 +10,14 @@ displayname_sec="app"
 displayname_key="title"
 
 package="syno-library"
-version="0.0.0001"
+version="0.0.0002"
 maintainer="Synology Community"
 arch="bromolow"
+
+dsmuidir="ui"
+dsmappname="SYNOCOMMUNITY.sl.AppInstance"
+
+thirdparty="yes"
 
 [ "$(caller)" != "0 NULL" ] && return 0
 pkg_dump_info

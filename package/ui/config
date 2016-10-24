@@ -1,0 +1,22 @@
+{
+    "syno-library.js": {
+        "SYNOCOMMUNITY.sl.AppInstance": {
+            "type": "app",
+            "title": "app:title",
+            "desc": "app:description",
+            "icon": "images\/syno-library_{0}.png",
+            "version": "__PKG_VERSION__",
+            "texts": "texts",
+            "allowMultiInstance": false,
+            "appWindow": "SYNOCOMMUNITY.sl.AppWindow",
+            "depend": ["SYNOCOMMUNITY.sl.AppWindow"]
+        },
+        "SYNOCOMMUNITY.sl.AppWindow": {
+            "type": "lib",
+            "title": "app:title",
+            "icon": "images\/syno-library_{0}.png",
+            "texts": "texts",
+            "depend": []
+        }
+    }
+}
