@@ -10,6 +10,8 @@ Dans ce fichier nous devons définir le "namespace" de l'application. Cela perme
 1. L'une devant hériter de SYNO.SDS.AppInstance qui définit chaque instance de l'application démarrée
 2. L'autre devant hériter de SYNO.SDS.AppWindow qui définit la fenêtre
 
+Nous allons donc créer un fichier "syno-librarie.js" qui conteindra la définitionde ces deux classes.
+
     $cd /opt/toolkit/source/syno-library/package/ui
     $cat << __EOF__ > syno-library.js
     // Namespace definition
@@ -39,7 +41,7 @@ Dans ce fichier nous devons définir le "namespace" de l'application. Cela perme
                     text: _TT("SYNOCOMMUNITY.sl.AppInstance", "body", "hw")
                 }]
             }, config);
-
+    
             this.callParent([config]);
         }
     });
