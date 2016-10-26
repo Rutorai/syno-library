@@ -1,2 +1,40 @@
 #!/bin/sh
+
+# Stopping syno-library service
+# /var/packages/syno-library/scripts/start-stop-status stop
+
+COUNT=$(find / -name webapps -print | wc -l)
+
+if [ $COUNT -eq 1 ];
+then
+    # Stopping tomcat to remove syno-library package
+    /var/packages/Tomcat7/scripts/start-stop-status stop
+    
+    # Retrieve tomcat webapps folder
+    WEBAPPS_FOLDER=$(find / -name webapps -print)
+    
+    # Remove syno-library package
+    if [ -e "$WEBAPPS_FOLDER/sl.war" ];
+    then
+        rm -f $WEBAPPS_FOLDER/sl.war
+    fi
+    if [ -e "$WEBAPPS_FOLDER/sl" ];
+    then
+        rm -rf $WEBAPPS_FOLDER/sl
+    fi
+
+    # Restarting tomcat
+    /var/packages/Tomcat7/scripts/start-stop-status start
+else
+    echo "Error $COUNT occurences of webapps"
+fi
+
+psql -U postgres -tAc "select 1 from pg_user where usename='sl_owner';" | grep -q 1
+
+if [ $? -eq 0 ];
+then
+    psql -U postgres -c "drop database sl_db;"
+    psql -U postgres -c "drop user sl_owner;"
+fi
+
 exit 0

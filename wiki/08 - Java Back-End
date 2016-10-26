@@ -1,0 +1,161 @@
+# Java Back-End
+
+Dans cette dernière partie, je parlerai de la connexion de notre Application à un back-end un peu plus dynamique qu'un fichier JSON.
+Nous pourrons alors vérifier que la pagination fonctionne correctement, que le filtre fonctionne également, etc.
+
+Pour commencer établissons ce que nous voulons:
+
+1. Un gestionnaire de base de données. Personnellement je préfère PostgreSQL. Comme cette base de données est installée par défaut sur un Synology (en tout cas de ce que j'ai pu en vérifier), nous allons l'utiliser.
+1. Un user/password et une base de donnée.
+1. Java bien sûr
+1. Tomcat7, en effet le back-end sera simplement déployé sur tomcat
+1. Et pour finir le plus important, ben notre back-end. Il sera en Java avec Hibernate, Spring, Maven, etc. Je ne le détail pas, il s'agit d'un rapide back-end. Si vous préférez vous pouvez développer votre propre back-end dans un autre langage.
+
+Normalement PostgreSQL est installé et démarré par défaut. Mais si tel n'était pas le cas ? Ben ça serait la fin du monde !!!
+Donc pour éviter cela, nous allons vérifier que les différents packages et services requis sont bien pinstallés et démarrés.
+
+Pour cela nous devons modifier le fichier INFO.sh pour ajouter les lignes suivantes:
+
+    install_dep_services="apache-web pgsql Tomcat7"
+    install_dep_packages="Tomcat7"
+    start_dep_services="apache-web pgsql"
+    
+Le service "apache-web" a été ajouté pour être plus propre, mais s'il nétait pas démarré ben nous n'aurions jamais pu démarrer le Front-End dans l'étape précédante.
+
+Premièrement nous avons besoin d'une base de données, il nous faut donc la créer. Nous utiliserons donc les informations suivantes:
+
+    login: sl_owner
+    password: change_me
+    db name: sl_db
+
+Ces informations seront utiles lors de la phase de pré-installation. Nous allons donc nous en servir dans le fichier "preinst".
+
+Nous devons également définir les tables à créer. Pour faire simple il s'agit de deux tables identiques avec trois colonnes: l'identifiant, un titre et une description
+
+    $mkdir /opt/toolkit/source/syno-library/package/sql/
+    $cd /opt/toolkit/source/syno-library/package/sql/
+    
+    $cat << __EOF__ > ./create.sql
+    CREATE TABLE IF NOT EXISTS t_recipe (
+        "identifier"    BIGINT			PRIMARY KEY,
+        "title"	    CHARACTER VARYING(128)	NOT NULL,
+        "description"   CHARACTER VARYING(512)
+    );
+    
+    CREATE TABLE IF NOT EXISTS t_magazine (
+        "identifier"    BIGINT			PRIMARY KEY,
+        "title"	    CHARACTER VARYING(128)	NOT NULL,
+        "description"   CHARACTER VARYING(512)
+    );
+    __EOF__
+    
+Nous allons aussi insérer un certains nombre de données. Pour faire simple nous créons un script qui génèrera plusieurs lignes à insérer:
+
+    $cd /opt/toolkit/source/syno-library/package/sql/
+    $cat << __EOF__ > ./generate-data.sh
+    #!/bin/bash
+    
+    # Ajout de 50 recettes
+    for i in {1..50}
+    do
+        echo "insert into t_recipe values (\$i, 'Recette n\$i', 'Description de cette merveilleuse recette n\$i');"
+    done
+    
+    # Ajout de 15 magazines
+    for i in {1..15}
+    do
+        echo "insert into t_magazine values (\$i, 'Magasine n\$i', 'Description de ce merveilleux magasine n\$i');"
+    done
+    __EOF__
+    
+Ce fichier doit être exécutable et sera lancé lors de la génération du package (comme pour INFO.sh)
+
+    $chmod +x ./generate-data.sh
+    
+Maintenant que nous avons toutes ces données, nous pouvons mettre à jour le script shell "preinst". Ce script créera le user pour la DB et la DB elle même. Les deux tables seront créées et quelques données de tests seront ajoutées.
+
+    $cd /opt/toolkit/source/syno-library/scripts/
+    $cat << __EOF__ > preinst
+    #!/bin/sh
+    
+    psql -U postgres -tAc "select 1 from pg_user where usename='sl_owner';" | grep -q 1
+    
+    if [ \$? -eq 1 ];
+    then
+        psql -U postgres -c "create user sl_owner login encrypted password 'change_me';"
+        psql -U postgres -c "create database sl_db owner sl_owner encoding 'SQL_ASCII';"
+    fi
+    
+    psql -U sl_owner -f \${SYNOPKG_PKGINST_TEMP_DIR}/sql/create.sql sl_db
+    psql -U sl_owner -f \${SYNOPKG_PKGINST_TEMP_DIR}/sql/insert.sql sl_db
+    
+    COUNT=\$(find / -name webapps -print | wc -l)
+    
+    if [ \$COUNT -eq 1 ];
+    then
+        WEBAPPS_FOLDER=\$(find / -name webapps -print)
+        cp \${SYNOPKG_PKGINST_TEMP_DIR}/war/sl.war \$WEBAPPS_FOLDER
+    else
+        echo "Error \$COUNT occurences of webapps" > \$SYNOPKG_TEMP_LOGFILE
+    fi
+    
+    exit 0
+    __EOF__
+
+A contrario, lorsque l'application sera désinstallée. Il faudra bien évidemment faire le ménage et supprimer cette base de données ainsi que l'utilisateur. Pour cela, nous devons mettre à jour le script shell "preuninst".
+
+    $cd /opt/toolkit/source/syno-library/scripts/
+    $cat << __EOF__ > preuninst 
+    #!/bin/sh
+    
+    # Stopping syno-library service
+    # /var/packages/syno-library/scripts/start-stop-status stop
+    
+    COUNT=\$(find / -name webapps -print | wc -l)
+    
+    if [ \$COUNT -eq 1 ];
+    then
+        # Stopping tomcat to remove syno-library package
+        /var/packages/Tomcat7/scripts/start-stop-status stop
+        
+        # Retrieve tomcat webapps folder
+        WEBAPPS_FOLDER=\$(find / -name webapps -exec ls -1 {}/ \\; | grep syno-library)
+        
+        # Remove syno-library package
+        if [ -e \$WEBAPPS_FOLDER/syno-library* ];
+        then
+            rm -rf \$WEBAPPS_FOLDER/syno-library*
+        fi
+    
+        # Restarting tomcat
+        /var/packages/Tomcat7/scripts/start-stop-status start
+    else
+        echo "Error \$COUNT occurences of webapps" > \$SYNOPKG_TEMP_LOGFILE
+    fi
+    
+    psql -U postgres -tAc "select 1 from pg_user where usename='sl_owner';" | grep -q 1
+    
+    if [ \$? -eq 0 ];
+    then
+        psql -U postgres -c "drop database sl_db;"
+        psql -U postgres -c "drop user sl_owner;"
+    fi
+    
+    exit 0
+    __EOF__
+
+Le code source pour la partie backend doit être compilée avant de pouvoir générer le package Synology. Pour cela j'utilise Maven. donc il suffit d'exécuter la commande ci-dessous et de copier le "war" dans le répertoire package/war.
+
+    $mkdir -p /opt/toolkit/source/syno-library/package/war/
+    $cd /opt/toolkit/source/syno-library/backend/
+    $mvn clean install
+    $cp target/sl.war ../package/war/
+
+Précedemment nous utilisions de simples fichiers JSON. Désormais nous allons utiliser les "webservices" exposés par le backend Java. Nous devons donc adapter les "Store" ExtJs qui alimentent les tableaux de notre Front-End. Dans notre cas il y a une légère subtilité, le backend est exposé sur un port différent du Front-End. En temps normale nous utiliserions un proxy JSONP, mais ça n'existait pas encore dans l'ancestrale version utiliséepar Synology. Nous devons donc utiliser le proxy "Ext.data.ScriptTagProxy". L'URL est encodé en dur, c'est pas propre, honte à moi, mais ça me donnera l'occasion d'expliquer comment faire un wizard d'aide à l'installation et d'obtenir des données de l'utilisateur .... et ça dès que j'aurai le temps et surtout compris :-/
+
+Voilà, tout y est normalement. Il ne reste plus qu'à générer notre package Synology.
+
+    $cd /opt/toolkit
+    $./pkgscripts/PkgCreate.py -x0 --no-sign -c syno-library
+
+

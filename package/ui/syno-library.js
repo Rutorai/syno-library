@@ -29,8 +29,8 @@ Ext.define("SYNOCOMMUNITY.sl.AppWindow", {
 	constructor : function(config) {
 		var me = this;
 			
-		me.recipes = me.createGrid("recipes");
-		me.magazines = me.createGrid("magazines");
+		me.recipes = me.createGrid("http://" + window.location.hostname + ":7070/sl/data/recipe/list");
+		me.magazines = me.createGrid("http://" + window.location.hostname + ":7070/sl/data/magazine/list");
 		
 		me.tabs = (function () {
 			var allTabs = [];
@@ -115,7 +115,14 @@ Ext.define("SYNOCOMMUNITY.sl.AppWindow", {
 		// Définition du store pour récupérer l'ensemble des éléments
 		var gridStore = new SYNO.API.JsonStore({
 		    autoDestroy: true,
-		    url : this.jsConfig.jsBaseURL + "/data/" + dataSrc + '.json',
+		    proxy: new Ext.data.ScriptTagProxy({
+			api: {
+			    read: {url: dataSrc, method: "GET"},
+			    create: {url: dataSrc, method: "POST"},
+			    update: {url: dataSrc, method: "PUT"},
+			    destroy: {url: dataSrc, method: "DELETE"}
+			}
+		    }),
 		    method: "GET",
 		    root: 'result',
 		    idProperty: 'identifier',
@@ -127,7 +134,7 @@ Ext.define("SYNOCOMMUNITY.sl.AppWindow", {
 			    type: 'string'
 			}, {
 			    name: 'description',
-			    type: 'int'
+			    type: 'string'
 			}]
 		});
 

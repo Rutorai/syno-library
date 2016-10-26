@@ -19,15 +19,22 @@ create_package_tgz() {
       rm -r $package_tgz_dir
     fi
 
-    mkdir -p $package_tgz_dir
+    mkdir -p $package_tgz_dir/ui
+    mkdir -p $package_tgz_dir/sql
+    mkdir -p $package_tgz_dir/war
+    
+    ### Generate data file
+    ./package/sql/generate-data.sh > ./package/sql/insert.sql
 
-    cp -R package/* $package_tgz_dir
+    cp -R package/ui/* $package_tgz_dir/ui/
+    cp -R package/sql/*.sql $package_tgz_dir/sql/
+    cp -R package/war/* $package_tgz_dir/war/
 
     ### create package.tgz $1: source_dir $2: dest_dir
     pkg_make_package $package_tgz_dir "${PKG_DIR}"
 }
 
-create_spk(){
+create_spk() {
     local conf_dir=$PKG_DIR/conf
     local scripts_dir=$PKG_DIR/scripts
 
@@ -47,7 +54,7 @@ create_spk(){
     # Please put the result spk into /image/packages
     # spk name functions: pkg_get_spk_name pkg_get_spk_unified_name pkg_get_spk_family_name
     mkdir -p /image/packages
-    pkg_make_spk ${PKG_DIR} "/image/packages" syno-library-0.0.0003.spk
+    pkg_make_spk ${PKG_DIR} "/image/packages" syno-library-0.0.0004.spk
 }
 
 main() {
