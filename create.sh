@@ -1,9 +1,9 @@
 #!/bin/bash
 
 PACKAGE_NAME=${PACKAGE_NAME:-syno-library}
-PACKAGE_VERSION=${PACKAGE_VERSION:-0.0.0001}
+PACKAGE_VERSION=${PACKAGE_VERSION:-0.0.0005}
 TOOLKIT_FOLDER=${TOOLKIT_FOLDER:-/opt/toolkit}
-DSM_VERSION=${DSM_VERSION:-5.2}
+DSM_VERSION=${DSM_VERSION:-6.1}
 PACKAGE_MAINTAINER=${PACKAGE_MAINTAINER:-Synology Community}
 NAS_ARCH=${NAS_ARCH:-bromolow}
 PACKAGE_CENTER_DESC=${PACKAGE_CENTER_DESC:-This is a wonderful Synology package}
@@ -74,12 +74,12 @@ cd $TOOLKIT_FOLDER
 
 # Download of synology toolchain
 echo -ne "Downloading pkgscripts toolkit"
-git clone https://github.com/SynologyOpenSource/pkgscripts &> /tmp/syno-pkg.log 
+git clone https://github.com/SynologyOpenSource/pkgscripts-ng &> /tmp/syno-pkg.log 
 result $?
 
 # Creation of build environment
 echo -ne "Building dev environment"
-./pkgscripts/EnvDeploy -y -v 5.2 -p bromolow &> /tmp/syno-pkg.log 
+./pkgscripts-ng/EnvDeploy -v ${DSM_VERSION} -p ${NAS_ARCH} &> /tmp/syno-pkg.log 
 result $?
 
 # Change to package image directory
@@ -217,15 +217,21 @@ cat << __EOF__ > ./INFO.sh
 source /pkgscripts/include/pkg_util.sh
 
 UISTRING_PATH="/source/${PACKAGE_NAME}/package/ui/texts"
+# Avec la version 6.1, la description et le nom sont obligatoire. Cependant, ces informations ne sont plus 
+# générées à partir des clés ci-dessous. Il faut donc les écrire manuellement (le temps de trouver pourquoi
+# et comment remédier à ce problème).
 description_sec="app"
 description_key="description"
 displayname_sec="app"
 displayname_key="title"
+# A mettre manuellement pour le moment
+displayname=syno-library
+description=syno-library
 
 package="${PACKAGE_NAME}"
 version="${PACKAGE_VERSION}"
 maintainer="${PACKAGE_MAINTAINER}"
-arch="${NAS_ARCH}"
+arch="\$(pkg_get_platform)"
 
 [ "\$(caller)" != "0 NULL" ] && return 0
 pkg_dump_info
@@ -305,5 +311,5 @@ result $?
 cd ${TOOLKIT_FOLDER}
 
 echo -ne "Generation of synology package"
-./pkgscripts/PkgCreate.py -x0 --no-sign -c ${PACKAGE_NAME} &> /tmp/syno-pkg.log
+./pkgscripts-ng/PkgCreate.py -x0 -S -c ${PACKAGE_NAME} &> /tmp/syno-pkg.log
 result $?
