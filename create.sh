@@ -74,7 +74,7 @@ cd $TOOLKIT_FOLDER
 
 # Download of synology toolchain
 echo -ne "Downloading pkgscripts toolkit"
-git clone https://github.com/SynologyOpenSource/pkgscripts-ng &> /tmp/syno-pkg.log 
+git clone https://github.com/Rutorai/pkgscripts-ng &> /tmp/syno-pkg.log 
 result $?
 
 # Creation of build environment
@@ -204,7 +204,7 @@ cat << __EOF__ > ./SynoBuildConf/depends
 # each line here is a project for reference only but no need to be built
 
 [default]
-all="${DSM_VERSION}"   # toolkit environment version of specific platform. (all platform use 5.2 toolkit environment)
+all="${DSM_VERSION}"   # toolkit environment version of specific platform. (all platform use 6.1 toolkit environment)
 __EOF__
 result $?
 
@@ -217,14 +217,7 @@ cat << __EOF__ > ./INFO.sh
 source /pkgscripts/include/pkg_util.sh
 
 UISTRING_PATH="/source/${PACKAGE_NAME}/package/ui/texts"
-# Avec la version 6.1, la description et le nom sont obligatoire. Cependant, ces informations ne sont plus 
-# générées à partir des clés ci-dessous. Il faut donc les écrire manuellement (le temps de trouver pourquoi
-# et comment remédier à ce problème).
-description_sec="app"
-description_key="description"
-displayname_sec="app"
-displayname_key="title"
-# A mettre manuellement pour le moment
+# Avec la version 6.1, la description et le nom sont obligatoires et ne peuvent plus être construit à partir des fichiers de traduction.
 displayname=syno-library
 description=syno-library
 

@@ -4,15 +4,14 @@
 source /pkgscripts/include/pkg_util.sh
 
 UISTRING_PATH="/source/syno-library/package/ui/texts"
-description_sec="app"
-description_key="description"
-displayname_sec="app"
-displayname_key="title"
+# Avec la version 6.1, la description et le nom sont obligatoires et ne peuvent plus être construit à partir des fichiers de traduction.
+displayname=syno-library
+description=syno-library
 
 package="syno-library"
-version="0.0.0004"
+version="0.0.0005"
 maintainer="Synology Community"
-arch="bromolow"
+arch="$(pkg_get_platform)"
 
 dsmuidir="ui"
 dsmappname="SYNOCOMMUNITY.sl.AppInstance"

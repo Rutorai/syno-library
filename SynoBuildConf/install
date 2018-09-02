@@ -54,7 +54,7 @@ create_spk() {
     # Please put the result spk into /image/packages
     # spk name functions: pkg_get_spk_name pkg_get_spk_unified_name pkg_get_spk_family_name
     mkdir -p /image/packages
-    pkg_make_spk ${PKG_DIR} "/image/packages" syno-library-0.0.0004.spk
+    pkg_make_spk ${PKG_DIR} "/image/packages" syno-library-0.0.0005.spk
 }
 
 main() {
