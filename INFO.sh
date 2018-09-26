@@ -18,9 +18,9 @@ dsmappname="SYNOCOMMUNITY.sl.AppInstance"
 
 thirdparty="yes"
 
-install_dep_services="apache-web pgsql Tomcat7"
-install_dep_packages="Tomcat7"
-start_dep_services="apache-web pgsql"
+install_dep_services="nginx pgsql"
+install_dep_packages="PythonModule"
+start_dep_services="nginx pgsql"
 
 [ "$(caller)" != "0 NULL" ] && return 0
 pkg_dump_info

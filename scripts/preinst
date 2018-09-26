@@ -1,24 +1,2 @@
 #!/bin/sh
-
-psql -U postgres -tAc "select 1 from pg_user where usename='sl_owner';" | grep -q 1
-
-if [ $? -eq 1 ];
-then
-    psql -U postgres -c "create user sl_owner login encrypted password 'change_me';"
-    psql -U postgres -c "create database sl_db owner sl_owner encoding 'SQL_ASCII';"
-fi
-
-psql -U sl_owner -f ${SYNOPKG_PKGINST_TEMP_DIR}/sql/create.sql sl_db
-psql -U sl_owner -f ${SYNOPKG_PKGINST_TEMP_DIR}/sql/insert.sql sl_db
-
-COUNT=$(find / -name webapps -print | wc -l)
-
-if [ $COUNT -eq 1 ];
-then
-    WEBAPPS_FOLDER=$(find / -name webapps -print)
-    cp ${SYNOPKG_PKGINST_TEMP_DIR}/war/sl.war $WEBAPPS_FOLDER
-else
-    echo "Error $COUNT occurences of webapps" > $SYNOPKG_TEMP_LOGFILE
-fi
-
 exit 0

@@ -1,2 +1,39 @@
 #!/bin/sh
-exit 0
+
+PRIVATE_LOCATION="/var/packages/syno-library/target"
+PYTHON_MODULE_PATH="/usr/local/lib/python2.7/site-packages"
+
+start_package()
+{
+    ln -sf ${PRIVATE_LOCATION}/usr/lib/python2.7/site-packages/configparser-3.5.0-py2.7-nspkg.pth ${PYTHON_MODULE_PATH}
+    ln -sf ${PRIVATE_LOCATION}/usr/lib/python2.7/site-packages/configparser.py ${PYTHON_MODULE_PATH}
+    ln -sf ${PRIVATE_LOCATION}/usr/lib/python2.7/site-packages/backports ${PYTHON_MODULE_PATH}
+}
+
+stop_package()
+{
+	rm -rf ${PYTHON_MODULE_PATH}/configparser-3.5.0-py2.7-nspkg.pth
+	rm -rf ${PYTHON_MODULE_PATH}/configparser.py
+	rm -rf ${PYTHON_MODULE_PATH}/backports
+}
+
+case $1 in
+        start)
+                start_package
+                exit 0
+                ;;
+        stop)
+                stop_package
+                exit 0
+                ;;
+        status)
+                if [ -f ${CAL_PID} ]; then
+                        exit 0
+                else
+                        exit 1
+                fi
+                ;;
+        log)
+                exit 0
+                ;;
+esac

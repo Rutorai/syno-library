@@ -53,6 +53,10 @@ then
 fi
 
 # Creation of toolkit folders
+echo -ne "Creating folder ${TOOLKIT_FOLDER}/source/${PACKAGE_NAME}/conf"
+mkdir -p ${TOOLKIT_FOLDER}/source/${PACKAGE_NAME}/conf
+result $?
+
 echo -ne "Creating folder ${TOOLKIT_FOLDER}/source/${PACKAGE_NAME}/package/ui/images"
 mkdir -p ${TOOLKIT_FOLDER}/source/${PACKAGE_NAME}/package/ui/images
 result $?

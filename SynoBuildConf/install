@@ -19,24 +19,21 @@ create_package_tgz() {
       rm -r $package_tgz_dir
     fi
 
-    mkdir -p $package_tgz_dir/ui
-    mkdir -p $package_tgz_dir/sql
-    mkdir -p $package_tgz_dir/war
-    
-    ### Generate data file
-    ./package/sql/generate-data.sh > ./package/sql/insert.sql
+    mkdir -p $package_tgz_dir
 
-    cp -R package/ui/* $package_tgz_dir/ui/
-    cp -R package/sql/*.sql $package_tgz_dir/sql/
-    cp -R package/war/* $package_tgz_dir/war/
+    cp -R package/* $package_tgz_dir
 
     ### create package.tgz $1: source_dir $2: dest_dir
     pkg_make_package $package_tgz_dir "${PKG_DIR}"
 }
 
-create_spk() {
+create_spk(){
     local conf_dir=$PKG_DIR/conf
     local scripts_dir=$PKG_DIR/scripts
+
+    ### Copy Package Center scripts to PKG_DIR
+    mkdir -p $conf_dir
+    cp -av conf/* $conf_dir
 
     ### Copy Package Center scripts to PKG_DIR
     mkdir -p $scripts_dir

@@ -1,2 +1,13 @@
 #!/bin/sh
+
+DB_USER="synolibrary"
+DB_NAME="synolibrary"
+
+PSQL_BIN="/usr/bin/psql"
+
+PACKAGE_TARGET_DIR="/var/packages/syno-library/target"
+
+$PSQL_BIN -U $DB_USER -f ${PACKAGE_TARGET_DIR}/scripts/sql/create.sql $DB_NAME
+$PSQL_BIN -U $DB_USER -f ${PACKAGE_TARGET_DIR}/scripts/sql/insert.sql $DB_NAME
+
 exit 0
