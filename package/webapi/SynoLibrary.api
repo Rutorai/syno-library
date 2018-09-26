@@ -1,0 +1,10 @@
+{
+	"SYNOCOMMUNITY.sl.SynoLibraryAPI": {
+		"path": "syno-library/syno-library.cgi",
+		"minVersion": 1,
+		"maxVersion": 1,
+		"methods": {
+			"1": ["list"]
+		}
+	}
+}

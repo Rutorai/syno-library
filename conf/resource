@@ -1,0 +1,22 @@
+{
+	"webapi-desc": {
+		"apis": [{
+			"type": "cgi",
+			"lib": ["webapi/SynoLibrary.api"],
+			"api-dir": "webapi",
+			"link-name": "syno-library"
+		}]
+	},
+	"pgsql-db": {
+		"create-user": true,
+		"create-database": [{
+			"db-name": "synolibrary",
+			"db-owner": "synolibrary",
+			"db-encoding": "UTF8",
+			"db-collision": "skip",
+			"db-enable-lang-c": true
+		}],
+		"drop-db-uninst": true,
+		"drop-user-uninst": true
+	}
+}
