@@ -1,2 +1,9 @@
 #!/bin/sh
+
+PYTHON_MODULE_PATH="/usr/local/lib/python2.7/site-packages"
+
+rm -rf ${PYTHON_MODULE_PATH}/configparser-3.5.0-py2.7-nspkg.pth
+rm -rf ${PYTHON_MODULE_PATH}/configparser.py
+rm -rf ${PYTHON_MODULE_PATH}/backports
+    
 exit 0

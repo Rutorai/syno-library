@@ -1,4 +1,11 @@
 {
 	"username": "synolibrary",
-	"groupname": "synolibrary"
+	"groupname": "synolibrary",
+	"ctrl-script":[{ 
+        "action": "postinst", 
+        "run-as": "root"    
+    }, { 
+        "action": "postuninst", 
+        "run-as": "root" 
+    }]
 }

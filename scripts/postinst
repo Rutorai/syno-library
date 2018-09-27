@@ -5,9 +5,13 @@ DB_NAME="synolibrary"
 
 PSQL_BIN="/usr/bin/psql"
 
-PACKAGE_TARGET_DIR="/var/packages/syno-library/target"
+PYTHON_MODULE_PATH="/usr/local/lib/python2.7/site-packages"
 
-$PSQL_BIN -U $DB_USER -f ${PACKAGE_TARGET_DIR}/scripts/sql/create.sql $DB_NAME
-$PSQL_BIN -U $DB_USER -f ${PACKAGE_TARGET_DIR}/scripts/sql/insert.sql $DB_NAME
+sudo -u $DB_USER $PSQL_BIN -U $DB_USER -f $SYNOPKG_PKGDEST/scripts/sql/create.sql $DB_NAME
+sudo -u $DB_USER $PSQL_BIN -U $DB_USER -f $SYNOPKG_PKGDEST/scripts/sql/insert.sql $DB_NAME
+
+ln -svf $SYNOPKG_PKGDEST/usr/lib/python2.7/site-packages/configparser-3.5.0-py2.7-nspkg.pth ${PYTHON_MODULE_PATH}
+ln -svf $SYNOPKG_PKGDEST/usr/lib/python2.7/site-packages/configparser.py ${PYTHON_MODULE_PATH}
+ln -svf $SYNOPKG_PKGDEST/usr/lib/python2.7/site-packages/backports ${PYTHON_MODULE_PATH}
 
 exit 0
