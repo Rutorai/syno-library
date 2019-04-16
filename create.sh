@@ -78,7 +78,7 @@ cd $TOOLKIT_FOLDER
 
 # Download of synology toolchain
 echo -ne "Downloading pkgscripts toolkit"
-git clone https://github.com/Rutorai/pkgscripts-ng &> /tmp/syno-pkg.log 
+git clone https://github.com/SynologyOpenSource/pkgscripts-ng &> /tmp/syno-pkg.log 
 result $?
 
 # Creation of build environment
@@ -308,5 +308,5 @@ result $?
 cd ${TOOLKIT_FOLDER}
 
 echo -ne "Generation of synology package"
-./pkgscripts-ng/PkgCreate.py -x0 -S -c ${PACKAGE_NAME} &> /tmp/syno-pkg.log
-result $?
+#./pkgscripts-ng/PkgCreate.py -x0 -S -c ${PACKAGE_NAME} &> /tmp/syno-pkg.log
+#result $?
